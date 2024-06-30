@@ -19,4 +19,12 @@ class LoginController extends AbstractController
             'last_username' => $authenticationUtils->getLastUsername(),
         ]);
     }
+
+    #[Route('/logout', name: 'logout_index', methods: ['GET'])]
+    public function logout(): never
+    {
+        throw new \Exception('This should never be reached!');
+    }
+
+
 }

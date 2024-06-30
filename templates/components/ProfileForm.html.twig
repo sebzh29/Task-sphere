@@ -1,0 +1,12 @@
+<div {{ attributes }} class="card bg-light">
+    <div class="card-body">
+        {{ form_start(form, {
+            attr: {
+                'novalidate': true,
+                'data-action': 'live#action:prevent',
+                'data-live-action-param': 'save',
+            }
+        }) }}
+        {{ form_end(form) }}
+    </div>
+</div>

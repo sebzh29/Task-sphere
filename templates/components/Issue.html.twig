@@ -1,0 +1,95 @@
+<div {{ attributes }}>
+    <div class="card">
+        <div class="card-header">{{ issue.keyCode }}</div>
+        <div class="card-body">
+
+            <div class="card-title">
+                {% if isEditingSummary %}
+                    <div class="input-group">
+                        <input aria-label="Résumé"
+                               type="text"
+                               class="form-control"
+                               data-model="issue.summary"
+                               value="{{ issue.summary }}"
+                               autofocus>
+                        <button class="btn btn-sm btn-outline-primary"
+                                data-action="live#action"
+                                data-live-action-param="saveSummary"
+                        >
+                            Enregistrer
+                        </button>
+                    </div>
+                {% else %}
+                    <a class="h5 text-primary">{{ issue.summary }}</a>
+                    <button class="btn btn-sm btn-outline-primary"
+                            data-action="live#action"
+                            data-live-action-param="activateEditingSummary"
+                    >
+                        Modifier
+                    </button>
+                {% endif %}
+            </div>
+
+            <p class="fw-bold card-text">Description</p>
+
+            <hr>
+
+            {% if isEditingDescription %}
+                <textarea aria-label="Description" class="form-control mb-3" data-model="issue.description">
+                    {{ issue.description }}
+                </textarea>
+                <button class="btn btn-sm btn-outline-primary"
+                        data-action="live#action"
+                        data-live-action-param="saveDescription">
+                    Enregistrer
+                </button>
+            {% else %}
+                <p class="card-text">{{ issue.description }}</p>
+                <button class="btn btn-sm btn-outline-primary"
+                        data-action="live#action"
+                        data-live-action-param="activateEditingDescription"
+                >
+                    Modifier la description
+                </button>
+            {% endif %}
+
+            <p class="fw-bold card-text">Pièces jointes</p>
+
+            <hr>
+
+           <div class="input-group mb-3">
+               <input class="form-control" name="attachment" type="file">
+                  <button class="btn btn-sm btn-outline-primary"
+                          data-action="live#action"
+                          data-live-action-param="files(attachment)|addAttachment">
+                      Joindre
+                  </button>
+           </div>
+
+            <div class="overflow-x-auto container-fluid">
+                <div class="flex-row flex-nowrap mb-3 row">
+                    {% for attachment in attachments %}
+                        <div class="col-sm-4">
+                            <div class="card h-100">
+                                <a href="{{ asset(attachment.path) }}" target="_blank">
+                                    <div class="card-body">
+                                        <small>{{ attachment.originalName }}</small>
+                                    </div>
+                                </a>
+                                <div class="card-footer">
+                                    <button class="btn btn-sm btn-danger"
+                                            data-action = "live#action"
+                                            data-live-action-param = "deleteAttachment"
+                                            data-live-id-param = "{{ attachment.id }}>
+                                       Supprimer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+       </div>
+
+    </div>
+</div>

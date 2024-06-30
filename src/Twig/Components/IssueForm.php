@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Twig\Components;
-use App\Entity\Project;
-use App\Form\Type\ProjectType;
+
+use App\Entity\Issue;
+
+use App\Form\Type\IssueType;
 use Doctrine\ORM\EntityManagerInterface;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,24 +13,27 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
+use Symfony\UX\LiveComponent\ComponentToolsTrait;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 use Symfony\UX\LiveComponent\ValidatableComponentTrait;
 
 #[AsLiveComponent]
-class ProjectForm extends AbstractController
+class IssueForm extends AbstractController
 {
-    use ComponentWithFormTrait; //permet de gerer le formulaire
-    use DefaultActionTrait; //permet d invoqur le composant
-    use ValidatableComponentTrait; //permet de valider le formulaire
+    use ComponentToolsTrait;
+    use ComponentWithFormTrait;
+    use DefaultActionTrait;
+    use ValidatableComponentTrait;
 
     #[LiveProp]
-    public ?Project $initialFormData = null;
+    public ?Issue $initialFormData = null;
+
     protected function instantiateForm(): FormInterface
     {
-        $this->initialFormData = new Project();
+        $this->initialFormData ??= new Issue();
 
-        return $this->createForm(ProjectType::class, $this->initialFormData);
+        return $this->createForm(IssueType::class, $this->initialFormData);
     }
     #[LiveAction]
     public function save(
@@ -39,21 +44,14 @@ class ProjectForm extends AbstractController
 
         $this->submitForm();
 
-        /** @var Project $project */
-        $project = $this->getForm()->getData();
+        /** @var Issue $issue */
+        $issue = $this->form->getData();
 
-        $em->persist($project);
-
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $user->addProject($project);
-        $user->setSelectedProject($project);
-
+        $em->persist($issue);
         $em->flush();
 
-        return $this->redirectToRoute('project_show', [
-            'keyCode' => $project->getKeyCode(),
+        return $this->redirectToRoute('issue_show', [
+            'id' => $issue->getId()
         ]);
     }
 }

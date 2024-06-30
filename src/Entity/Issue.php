@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Enum\IssueStatus;
+use App\Enum\IssueType;
 use App\Repository\IssueRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,10 +22,11 @@ class Issue
     #[ORM\JoinColumn(nullable: false)]
     private ?Project $project = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $type = null;
+    #[ORM\Column(type: Types::SMALLINT, enumType: IssueType::class)]
+    private ?IssueType $type = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Length(max: 100)]
     private ?string $summary = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -42,8 +45,14 @@ class Issue
     /**
      * @var Collection<int, Attachment>
      */
-    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'issue')]
+    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'issue', orphanRemoval: true)]
     private Collection $attachments;
+
+    #[ORM\Column(type: Types::SMALLINT, enumType: IssueStatus::class)]
+    private ?IssueStatus $status = null;
+
+
+    private ?string $keyCode = null;
 
     public function __construct()
     {
@@ -67,12 +76,12 @@ class Issue
         return $this;
     }
 
-    public function getType(): ?int
+    public function getType(): ?IssueType
     {
         return $this->type;
     }
 
-    public function setType(int $type): static
+    public function setType(IssueType $type): static
     {
         $this->type = $type;
 
@@ -168,4 +177,23 @@ class Issue
 
         return $this;
     }
+
+    public function getStatus(): ?IssueStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(IssueStatus $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getKeyCode(): ?string
+    {
+        return $this->project->getKeyCode() . '-' . $this->id;
+    }
+
+
 }

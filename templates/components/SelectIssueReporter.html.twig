@@ -1,0 +1,16 @@
+<div {{ attributes }}>
+    <select aria-label="Rapporteur"
+            class="form-select mb-3"
+            data-action="live#action"
+            data-live-action-param="updateReporter"
+            data-model="reporter"
+    >
+        {% for person in people %}
+            {% if issue.reporter == person %}
+                <option value="{{ person.id }}" selected>{{ person }}</option>
+            {% else %}
+                <option value="{{ person.id }}">{{ person }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+</div> }}

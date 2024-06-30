@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
-class Project
+class Project implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -44,6 +44,7 @@ class Project
         $this->members = new ArrayCollection();
         $this->issues = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -138,5 +139,10 @@ class Project
         }
 
         return $this;
+    }
+    
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }
